@@ -120,7 +120,7 @@ public:
 	constexpr static int32_t SignBit = ~0x7FFFFFFF;
 	constexpr static int32_t MantissaBits = 23;
 	constexpr static int32_t BaseExponent = 127;
-	constexpr static int64_t NegativeNAN = ~0x003FFFFF;
+	constexpr static int32_t NegativeNAN = ~0x003FFFFF;
 	constexpr static int32_t NegativeINF = ~0x007FFFFF;
 	
 	inline FP32(float f)
