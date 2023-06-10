@@ -44,7 +44,7 @@ This implementation of natural log is accurate over the entire number range and 
 
 ## Smaller Floats
 
-It should fine to decrease the iterations of the continued fraction for smaller datatypes which will increase the speed.
+It should fine to decrease the iterations of the continued fraction for smaller data types which will increase the speed.
 
 ## Larger Floats
 
@@ -52,7 +52,7 @@ Increase the precision as necessary by adding additional iterations of the conti
 
 ## Precision vs Speed
 
-If speed is more important than precision then iterations of the continued fraction can be reduced.
+If speed is more important than precision then iterations of the continued fraction can be reduced. If precision is more important then one can simply continue adding iterations of the continued fraction as needed.
 
 ## Customized Error Checking
 
