@@ -2,7 +2,7 @@
 Fast, free, and precise algorithm for calculations of natural logarithm.
 
 # Output
-|        LN | FP32 FFNL |       STL |       FP64 FFNL |             STL |
+|        LN |  FP32 FNL |       STL |        FP64 FNL |             STL |
 |----------:|----------:|----------:|----------------:|----------------:|
 |       inf |       inf |       inf |             inf |             inf |
 |      -inf | -nan(ind) | -nan(ind) |       -nan(ind) |       -nan(ind) |
@@ -37,3 +37,31 @@ Fast, free, and precise algorithm for calculations of natural logarithm.
 |       100 |   4.60517 |   4.60517 |   4.60517018599 |   4.60517018599 |
 |      1000 |   6.90776 |   6.90776 |   6.90775527898 |   6.90775527898 |
 |     10000 |   9.21034 |   9.21034 |   9.21034037198 |   9.21034037198 |
+
+# Considerations
+
+This implementation of natural log is accurate over the entire number range and matches the output of the C++ std::log function. Adding additional precision and changing it to support similar data types should be relatively straightforward. Although I only implemented and tested it for float and double it should be straightfoward to add support for long double or any data type that is similar to the IEEE 754 float.
+
+## Smaller Floats
+
+It should fine to decrease the iterations of the continued fraction for smaller datatypes which will increase the speed.
+
+## Larger Floats
+
+Increase the precision as necessary by adding additional iterations of the continued fraction.
+
+## Precision vs Speed
+
+If speed is more important than precision then iterations of the continued fraction can be reduced.
+
+## Customized Error Checking
+
+The default implementation assumes that one wants the behavior to be identical to the std::log with respect to negative numbers, +inf, -inf, +nan, -nan, and 0. However customizing that behavior should be possible if one needs something different.
+
+## More Speed
+
+If accuracy is only needed where 0 < x < 2 then one could eliminate the normalization of x (nx) step and the final step.
+
+## Conclusion
+
+This implementation can easily be customized for speed, precision, or other floating point types as needed.
