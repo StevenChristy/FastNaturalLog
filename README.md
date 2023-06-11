@@ -37,6 +37,18 @@ Fast, free, and precise algorithm for calculations of natural logarithm.
 |       100 |   4.60517 |   4.60517 |   4.60517018599 |   4.60517018599 |
 |      1000 |   6.90776 |   6.90776 |   6.90775527898 |   6.90775527898 |
 |     10000 |   9.21034 |   9.21034 |   9.21034037198 |   9.21034037198 |
+|       max |   88.7228 |   88.7228 |   709.782712893 |   709.782712893 |
+|    lowest | -nan(ind) | -nan(ind) |       -nan(ind) |       -nan(ind) |
+
+# How it works
+
+This function exploits the layout of IEEE 754 floating point and properties of the natural log.
+
+Step 1. Normalize x by changing the exponent to 2^0.
+Step 2. Obtain the natural log of the normalized x (nx) by using any function which is precise within the range of 1 < x < 2.
+Step 3. Add logb(x) \texttimes ln 2.
+
+Additional conditions must checked to ensure that the output matches the behavior of std::log.
 
 # Considerations
 
@@ -60,7 +72,7 @@ The default implementation assumes that one wants the behavior to be identical t
 
 ## More Speed
 
-If accuracy is only needed where 0 < x < 2 then one could eliminate the normalization of x (nx) step and the final step.
+If accuracy is only needed where 0 < x < 2 then one could eliminate Step 1 and Step 3.
 
 ## Conclusion
 

@@ -208,19 +208,19 @@ public:
 FP32 NaturalLog(FP32 x)
 {
 	using Float = FP32; // This function could be used for FP64 but is not as precise as the STL version of the double precision std::log
-	using Int = typename Float::IntType;
+	using Int = Float::IntType;
 
-	Bool Negative = Int(x.CastToInt() & Int(Float::SignBit)) == Int(Float::SignBit);
+	Bool Negative = (x.CastToInt() & Float::SignBit) == Float::SignBit;
 	if (Negative)
 		return Int(Float::NegativeNAN).CastToFloat();
-	Bool Exceptional = (x.CastToInt() & Int(Float::ExponentMask)) == Int(Float::ExponentMask);
+	Bool Exceptional = (x.CastToInt() & Int(Float::ExponentMask)) == Float::ExponentMask;
 	if (Exceptional)
 		return x;
-	Bool Zero = Int(x.CastToInt() & Int(Float::AbsValueMask)) == Int(0);
+	Bool Zero = (x.CastToInt() & Float::AbsValueMask) == 0;
 	if (Zero)
 		return Int(Float::NegativeINF).CastToFloat();
 	
-	Float nx = Int((x.CastToInt() & Int(Float::MantissaMask)) | Int(Float::One)).CastToFloat(); 
+	Float nx = Int((x.CastToInt() & Float::MantissaMask) | Float::One).CastToFloat(); 
 	Float z = (nx - Float(1.0)) / (nx + Float(1.0));
 	Float z_sq = z * z;
 	Float Result = z;
@@ -239,7 +239,7 @@ FP32 NaturalLog(FP32 x)
 	//
 	
 	Result += Result;
-	Result += Int(((x.CastToInt() & Int(Float::ExponentMask)) >> Float::MantissaBits) - Int(Float::BaseExponent)).ConvertToFloat() * Float(0.69314718056);
+	Result += Int(((x.CastToInt() & Int(Float::ExponentMask)) >> Float::MantissaBits) - Float::BaseExponent).ConvertToFloat() * Float(0.69314718056);
 	
 	return Result;
 }
@@ -247,19 +247,20 @@ FP32 NaturalLog(FP32 x)
 FP64 NaturalLog(FP64 x)
 {
 	using Float = FP64;
-	using Int = typename Float::IntType;
+	using Int = Float::IntType;
 
-	Bool Negative = Int(x.CastToInt() & Int(Float::SignBit)) == Int(Float::SignBit);
+	Bool Negative = (x.CastToInt() & Float::SignBit) == Float::SignBit;
 	if (Negative)
 		return Int(Float::NegativeNAN).CastToFloat();
-	Bool Exceptional = (x.CastToInt() & Int(Float::ExponentMask)) == Int(Float::ExponentMask);
+	Bool Exceptional = (x.CastToInt() & Int(Float::ExponentMask)) == Float::ExponentMask;
 	if (Exceptional)
 		return x;
-	Bool Zero = Int(x.CastToInt() & Int(Float::AbsValueMask)) == Int(0);
+	Bool Zero = (x.CastToInt() & Float::AbsValueMask) == 0;
 	if (Zero)
 		return Int(Float::NegativeINF).CastToFloat();
 	
-	Float nx = Int((x.CastToInt() & Int(Float::MantissaMask)) | Int(Float::One)).CastToFloat(); 
+	Float nx = Int((x.CastToInt() & Float::MantissaMask) | Float::One).CastToFloat();
+	
 	Float z = (nx - Float(1.0)) / (nx + Float(1.0));
 	Float z_sq = z * z;
 	Float Result = z;
@@ -286,7 +287,7 @@ FP64 NaturalLog(FP64 x)
 	//
 	
 	Result += Result;
-	Result += Int(((x.CastToInt() & Int(Float::ExponentMask)) >> Float::MantissaBits) - Int(Float::BaseExponent)).ConvertToFloat() * Float(0.69314718056);
+	Result += Int(((x.CastToInt() & Int(Float::ExponentMask)) >> Float::MantissaBits) - Float::BaseExponent).ConvertToFloat() * Float(0.69314718056);
 	
 	return Result;
 }
@@ -303,9 +304,20 @@ int main()
 	int numTests = sizeof(tests) / sizeof(double);
 	for (int i = 0; i < numTests; i++) 
 	{
-        	float fr = NaturalLog(FP32(tests[i]));
+		float fr = NaturalLog(FP32(tests[i]));
 		double dr = NaturalLog(FP64(tests[i]));
 		std::cout << std::setprecision(6) << std::setw(10) << tests[i] << std::setw(11) << fr << std::setw(11) << std::log(static_cast<float>(tests[i])) << std::setprecision(12) << std::setw(18) << dr << std::setw(18) <<  std::log(tests[i]) << std::endl; 
 	}
+
+	float fmax = NaturalLog(FP32(std::numeric_limits<float>::max()));
+	double dmax = NaturalLog(FP64(std::numeric_limits<double>::max()));
+	
+	std::cout << std::setprecision(6) << std::setw(10) << "max" << std::setw(11) << fmax << std::setw(11) << std::log(std::numeric_limits<float>::max()) << std::setprecision(12) << std::setw(18) << dmax << std::setw(18) <<  std::log(std::numeric_limits<double>::max()) << std::endl; 
+	
+	float fmin = NaturalLog(FP32(std::numeric_limits<float>::lowest()));
+	double dmin = NaturalLog(FP64(std::numeric_limits<double>::lowest()));
+	
+	std::cout << std::setprecision(6) << std::setw(10) << "lowest" << std::setw(11) << fmin << std::setw(11) << std::log(std::numeric_limits<float>::lowest()) << std::setprecision(12) << std::setw(18) << dmin << std::setw(18) <<  std::log(std::numeric_limits<double>::lowest()) << std::endl; 
+	
 	return 0;
 }
