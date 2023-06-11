@@ -42,29 +42,32 @@ Fast, free, and precise algorithm for calculations of natural logarithm.
 
 # How it works
 
-This function exploits the layout of IEEE 754 floating point and properties of the natural log.
+This implementation of natural log exploits the layout of IEEE 754 floating point and properties of the natural log. We can quickly and accurately calculate the natural log when its in the range of 1 < x < 2. With bit manipulation the exponent can be normalized into that range. We then calculate the natural log of the normalized x. Finally, we calculate the natural log of the original exponent and add that to the result.
 
-Step 1. Normalize x by changing the exponent to 2^0.
-Step 2. Obtain the natural log of the normalized x (nx) by using any function which is precise within the range of 1 < x < 2.
-Step 3. Add logb(x) \texttimes ln 2.
+$y = \ln x = \ln normalize(x) + logb(x) * \ln 2$
+
+## Steps
+1. Obtain a normalized x ($nx$) by changing the exponent of x to $2^0$ using bit manipulation.
+2. Obtain the natural log of the normalized x ($\ln nx$) by using any function which is precise within the range of 1 < x < 2.
+3. Add $logb(x) * \ln 2$
 
 Additional conditions must checked to ensure that the output matches the behavior of std::log.
 
 # Considerations
 
-This implementation of natural log is accurate over the entire number range and matches the output of the C++ std::log function. Adding additional precision and changing it to support similar data types should be relatively straightforward. Although I only implemented and tested it for float and double it should be straightfoward to add support for long double or any data type that is similar to the IEEE 754 float.
+This implementation of natural log is accurate over the entire number range and matches the output of the C++ std::log function. Adding additional precision and changing it to support similar data types should be relatively straightforward. Although I only implemented and tested it for float and double it should be easy to add support for long double or any data type that is similar to the IEEE 754 float.
 
 ## Smaller Floats
 
-It should fine to decrease the iterations of the continued fraction for smaller data types which will increase the speed.
+It should fine to decrease the iterations of the polynomial series for smaller data types which will increase the speed.
 
 ## Larger Floats
 
-Increase the precision as necessary by adding additional iterations of the continued fraction.
+Increase the precision as necessary by adding additional iterations of the polynomial series.
 
 ## Precision vs Speed
 
-If speed is more important than precision then iterations of the continued fraction can be reduced. If precision is more important then one can simply continue adding iterations of the continued fraction as needed.
+If speed is more important than precision then iterations can be reduced. If precision is more important then one can simply continue adding iteration as needed.
 
 ## Customized Error Checking
 
